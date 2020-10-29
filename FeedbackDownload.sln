@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30615.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedbackDownload", "FeedbackDownload.csproj", "{BD210597-D175-42F5-8433-808583547143}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FeedbackDownloadSetup2", "..\FeedbackDownloadSetup2\FeedbackDownloadSetup2.vdproj", "{B0879FE2-A65B-4366-B513-47B4D115E99B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD210597-D175-42F5-8433-808583547143}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD210597-D175-42F5-8433-808583547143}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD210597-D175-42F5-8433-808583547143}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD210597-D175-42F5-8433-808583547143}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0879FE2-A65B-4366-B513-47B4D115E99B}.Debug|Any CPU.ActiveCfg = Debug
+		{B0879FE2-A65B-4366-B513-47B4D115E99B}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {31921FEE-4E34-43A8-BE53-CB6497295E00}
+	EndGlobalSection
+EndGlobal
