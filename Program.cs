@@ -14,7 +14,7 @@ namespace FeedbackDownload
         [STAThread]
         static void Main()
         {
-            const string connStr = "";
+            const string connStr = "//";
 
             SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY");
 
@@ -26,35 +26,166 @@ namespace FeedbackDownload
             }
         }
 
-        private static Dictionary<string, List<object>> GetAllElementsLM(SqlConnection conn)
+        private static int GetMaxNumber(SqlConnection conn)
         {
+            int i = 0;
             string query;
-            string[] columns = { "id", "date", "name", "entry1", "entry2", "entry3", "entry4" };
-            var dic = new Dictionary<string, List<object>>();
 
             conn.Open();
 
-            foreach (var elem in columns)
+            query = $@"SELECT id FROM ""feedback""";
+
+            using (var command = new SqlCommand(query, conn))
             {
-                dic.Add(elem, new List<object>());
-
-                query = $@"SELECT {elem} FROM ""feedback""";
-
-                using (var command = new SqlCommand(query, conn))
+                using (var reader = command.ExecuteReader())
                 {
-                    using (var reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            dic[elem].Add(reader.GetValue(0));
-                        }
+                        ++i;
                     }
                 }
             }
 
             conn.Close();
 
-            return dic;
+            return i;
+        }
+
+        private static List<Entries> SortEntries(SqlConnection conn)
+        {
+            var entries = new List<Entries>();
+
+            foreach (var element in GetAllElementsClass(conn))
+            {
+                entries.Add(element);
+            }
+
+            entries = entries.OrderBy(x => x.Name).ToList();
+
+            return entries;
+        }
+
+        private static IEnumerable<Entries> GetAllElementsClass(SqlConnection conn)
+        {
+            string query;
+            List<int> id;
+            List<DateTime> date;
+            List<string> name, entry1, entry2, entry3, entry4;
+            int max = GetMaxNumber(conn);
+
+            conn.Open();
+
+            query = $@"SELECT id FROM ""feedback""";
+
+            id = new List<int>();
+
+            using (var command = new SqlCommand(query, conn))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        id.Add((int)reader.GetValue(0));
+                    }
+                }
+            }
+
+            query = $@"SELECT date FROM ""feedback""";
+
+            date = new List<DateTime>();
+
+            using (var command = new SqlCommand(query, conn))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        date.Add((DateTime)reader.GetValue(0));
+                    }
+                }
+            }
+
+            query = $@"SELECT name FROM ""feedback""";
+
+            name = new List<string>();
+
+            using (var command = new SqlCommand(query, conn))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        name.Add((string)reader.GetValue(0));
+                    }
+                }
+            }
+
+            query = $@"SELECT entry1 FROM ""feedback""";
+
+            entry1 = new List<string>();
+
+            using (var command = new SqlCommand(query, conn))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        entry1.Add((string)reader.GetValue(0));
+                    }
+                }
+            }
+
+            query = $@"SELECT entry2 FROM ""feedback""";
+
+            entry2 = new List<string>();
+
+            using (var command = new SqlCommand(query, conn))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        entry2.Add((string)reader.GetValue(0));
+                    }
+                }
+            }
+
+            query = $@"SELECT entry3 FROM ""feedback""";
+
+            entry3 = new List<string>();
+
+            using (var command = new SqlCommand(query, conn))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        entry3.Add((string)reader.GetValue(0));
+                    }
+                }
+            }
+
+            query = $@"SELECT entry4 FROM ""feedback""";
+
+            entry4 = new List<string>();
+
+            using (var command = new SqlCommand(query, conn))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        entry4.Add((string)reader.GetValue(0));
+                    }
+                }
+            }
+
+            for (int i = 0; i < max; i++)
+            {
+                yield return new Entries(id[i], date[i], name[i], entry1[i], entry2[i], entry3[i], entry4[i]);
+            }
+
+            conn.Close();
         }
 
         private static void DeleteAll(SqlConnection conn)
@@ -88,9 +219,10 @@ namespace FeedbackDownload
         private static void SaveAllTables(SqlConnection conn, string user_name = "")
         {
             string folder = OpenFolder();
-            var local_table = GetAllElementsLM(conn);
+            int max = GetMaxNumber(conn);
+            var local_list = SortEntries(conn);
 
-            SaveTable(local_table, folder);
+            SaveTable(local_list, max, folder);
         }
 
         private static void ExecuteCommandDB(SqlCommand command, SqlConnection conn)
@@ -102,43 +234,31 @@ namespace FeedbackDownload
             conn.Close();
         }
 
-        private static void SaveTable(Dictionary<string, List<object>> table, string path)
+        private static void SaveTable(List<Entries> list, int max, string path)
         {
             ExcelFile loadedFile;
             ExcelWorksheet worksheet;
             Table tableMain;
-            int max = table["id"].Count(), j = 0;
+            int i = 0, j;
 
             loadedFile = new ExcelFile();
             worksheet = loadedFile.Worksheets.Add("Tables");
 
             PopulateTables(worksheet);
 
-            foreach (var key in table.Keys)
+            foreach (var entry in list)
             {
-                for (int i = 0; i < max; i++)
-                {
-                    switch (key)
-                    {
-                        case "id":
-                            worksheet.Cells[i + 1, j].Value = ConversionWrapper<int>((int)table[key][i]);
-                            break;
-                        case "date":
-                            worksheet.Cells[i + 1, j].Value = ConversionWrapper<string>((DateTime)table[key][i]);
-                            break;
-                        case "name":
-                        case "entry1":
-                        case "entry2":
-                        case "entry3":
-                        case "entry4":
-                            worksheet.Cells[i + 1, j].Value = ConversionWrapper<string>((string)table[key][i]);
-                            break;
-                        default:
-                            break;
-                    }
-                }
+                j = 0;
 
-                ++j;
+                worksheet.Cells[i + 1, j++].Value = entry.Id;
+                worksheet.Cells[i + 1, j++].Value = entry.Date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                worksheet.Cells[i + 1, j++].Value = entry.Name;
+                worksheet.Cells[i + 1, j++].Value = entry.Entry1;
+                worksheet.Cells[i + 1, j++].Value = entry.Entry2;
+                worksheet.Cells[i + 1, j++].Value = entry.Entry3;
+                worksheet.Cells[i + 1, j++].Value = entry.Entry4;
+
+                ++i;
             }
 
             if (max > 0)
@@ -195,20 +315,6 @@ namespace FeedbackDownload
             worksheet.Cells[0, 6].Value = "Entry4";
         }
 
-        private static T ConversionWrapper<T>(object elem)
-        {
-            switch (elem)
-            {
-                case int:
-                case string:
-                    return (T)elem;
-                case DateTime:
-                    return (T)(object)((DateTime)elem).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-                default:
-                    throw new ArgumentException();
-            }
-        }
-
         private static void CheckForInternetConnection()
         {
             try
@@ -228,5 +334,19 @@ namespace FeedbackDownload
                 Environment.Exit(0);
             }
         }
+    }
+
+    readonly struct Entries
+    {
+        public int Id { get; }
+        public DateTime Date { get; }
+        public string Name { get; }
+        public string Entry1 { get; }
+        public string Entry2 { get; }
+        public string Entry3 { get; }
+        public string Entry4 { get; }
+
+        public Entries(int id, DateTime date, string name, string entry1, string entry2, string entry3, string entry4) =>
+                (Id, Date, Name, Entry1, Entry2, Entry3, Entry4) = (id, date, name, entry1, entry2, entry3, entry4);
     }
 }
