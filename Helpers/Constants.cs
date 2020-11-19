@@ -2,7 +2,10 @@
 {
     public static class Constant
     {
-        public static int Offset = 5;
-        public static int PretCurs = 17, PretPregatire = 8, PretRecuperare = 17, PretOffice = 10;
+        public const int Offset = 5;
+        public const int PretCurs = 17;
+        public const int PretPregatire = 8;
+        public const int PretRecuperare = 17;
+        public const int PretOffice = 10;
     }
 }

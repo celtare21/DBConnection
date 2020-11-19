@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+
+// ReSharper disable UnusedMember.Global
 
 namespace DBConnection.Helpers
 {
@@ -75,7 +78,8 @@ namespace DBConnection.Helpers
                 "date",
                 "oraIncepere",
                 "oraFinal",
-                "total"
+                "total",
+                "observatii"
             };
 
             var dic = new Dictionary<string, List<object>>();
@@ -84,17 +88,13 @@ namespace DBConnection.Helpers
 
             if (office)
             {
-                foreach (var elem in officeColumns)
-                {
-                    GetAllElementsHelper(conn, dic, elem, username, current);
-                }
+                if (officeColumns.Any(elem => !GetAllElementsHelper(conn, dic, elem, username, current)))
+                    dic = null;
             }
             else
             {
-                foreach (var elem in columns)
-                {
-                    GetAllElementsHelper(conn, dic, elem, username, current);
-                }
+                if (columns.Any(elem => !GetAllElementsHelper(conn, dic, elem, username, current)))
+                    dic = null;
             }
 
             conn.Close();
@@ -102,7 +102,7 @@ namespace DBConnection.Helpers
             return dic;
         }
 
-        private static void GetAllElementsHelper(SqlConnection conn, IDictionary<string, List<object>> dic, string elem, string table, bool current)
+        private static bool GetAllElementsHelper(SqlConnection conn, IDictionary<string, List<object>> dic, string elem, string table, bool current)
         {
             dic.Add(elem, new List<object>());
 
@@ -114,12 +114,17 @@ namespace DBConnection.Helpers
             {
                 using (var reader = command.ExecuteReader())
                 {
+                    if (!reader.HasRows)
+                        return false;
+
                     while (reader.Read())
                     {
                         dic[elem].Add(reader.GetValue(0));
                     }
                 }
             }
+
+            return true;
         }
 
         public static void DeleteLastMonthE(SqlConnection conn)
@@ -147,15 +152,15 @@ namespace DBConnection.Helpers
         public static void CreateTableDb(SqlConnection conn, string name)
         {
             string query = $@"CREATE TABLE ""prezenta.{name}"" (" +
-                            "id                  INT     NOT NULL    IDENTITY PRIMARY KEY," +
-                            "date                DATE    NOT NULL," +
+                            "id                 INT     NOT NULL    IDENTITY PRIMARY KEY," +
+                            "date               DATE    NOT NULL," +
                             "oraIncepere        TIME    NOT NULL," +
                             "oraFinal           TIME    NOT NULL," +
                             "cursAlocat         TIME    NOT NULL," +
                             "pregatireAlocat    TIME    NOT NULL," +
                             "recuperareAlocat   TIME    NOT NULL," +
-                            "total               TIME    NOT NULL," +
-                            "observatii          ntext   NOT NULL," +
+                            "total              TIME    NOT NULL," +
+                            "observatii         ntext   NOT NULL," +
                             ");";
 
             using (var command = new SqlCommand(query, conn))
@@ -167,12 +172,24 @@ namespace DBConnection.Helpers
         public static void CreateTableOfficeDb(SqlConnection conn, string name)
         {
             string query = $@"CREATE TABLE ""prezenta.office.{name}"" (" +
-                           "id                  INT     NOT NULL    IDENTITY PRIMARY KEY," +
-                           "date                DATE    NOT NULL," +
+                           "id                 INT     NOT NULL    IDENTITY PRIMARY KEY," +
+                           "date               DATE    NOT NULL," +
                            "oraIncepere        TIME    NOT NULL," +
                            "oraFinal           TIME    NOT NULL," +
-                           "total               TIME    NOT NULL," +
+                           "total              TIME    NOT NULL," +
+                           "observatii         ntext   NOT NULL," +
                            ");";
+
+            using (var command = new SqlCommand(query, conn))
+            {
+                ExecuteCommandDb(command, conn);
+            }
+        }
+
+        public static void ModifyTableDb(SqlConnection conn, string name)
+        {
+            string query = $@"ALTER TABLE ""prezenta.office.{name}""" +
+                           @"ADD observatii ntext NOT NULL DEFAULT 'None'";
 
             using (var command = new SqlCommand(query, conn))
             {

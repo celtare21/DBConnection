@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Data.SqlClient;
-using DBConnection.Helpers;
+using System.Threading;
 using GemBox.Spreadsheet;
 using static DBConnection.Helpers.DatabaseHelpers;
 using static DBConnection.Helpers.SaveTableHelpers;
+using static DBConnection.Helpers.MiscHelpers;
 
-// ReSharper disable UnusedMember.Local
 namespace DBConnection
 {
-    internal class Program
+    internal static class Program
     {
         [STAThread]
         private static void Main()
@@ -17,12 +17,14 @@ namespace DBConnection
 
             SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY");
 
-            MiscHelpers.CheckForInternetConnection();
+            CheckForInternetConnection();
 
             using (var conn = new SqlConnection(connStr))
             {
                 PersonalDownloader(conn);
             }
+
+            Thread.Sleep(2000);
         }
 
         private static void PersonalDownloader(SqlConnection conn)
@@ -31,12 +33,15 @@ namespace DBConnection
 
             do
             {
-                Console.WriteLine("Enter your pin:");
+                Console.Write("Enter your pin: ");
 
                 var pin = ReadPassword();
 
                 if (pin.Equals("9999"))
+                {
                     MasterDownloader(conn);
+                    return;
+                }
 
                 result = HasUser(conn, pin);
 
@@ -51,12 +56,11 @@ namespace DBConnection
         {
             SaveAllTables(conn, null, false);
             DeleteLastMonthE(conn);
-            Environment.Exit(0);
         }
 
         private static string ReadPassword()
         {
-            string password = "";
+            string password = string.Empty;
             ConsoleKeyInfo info = Console.ReadKey(true);
 
             while (info.Key != ConsoleKey.Enter)
@@ -80,6 +84,8 @@ namespace DBConnection
             }
 
             Console.WriteLine();
+            Console.WriteLine();
+
             return password;
         }
     }

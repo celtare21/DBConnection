@@ -5,12 +5,12 @@ VisualStudioVersion = 16.0.30428.66
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBConnection", "DBConnection.csproj", "{7BFDCF26-6F1C-42F1-9CE4-ADFCE9677194}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PrezentaLC", "..\PrezentaLC\PrezentaLC.vdproj", "{C9224C2F-5F39-4A5E-BC68-A5D2E33561A5}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{71FDBDE3-CE17-49B5-A68E-CDB0654F519A}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\..\Desktop\Prezenta.ico = ..\..\..\Desktop\Prezenta.ico
 	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PrezentaLCInstaller", "..\AllInstallers\PrezentaLCInstaller\PrezentaLCInstaller.vdproj", "{B445821D-790B-438E-872A-21EF6C46DA04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,8 +22,10 @@ Global
 		{7BFDCF26-6F1C-42F1-9CE4-ADFCE9677194}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BFDCF26-6F1C-42F1-9CE4-ADFCE9677194}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BFDCF26-6F1C-42F1-9CE4-ADFCE9677194}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9224C2F-5F39-4A5E-BC68-A5D2E33561A5}.Debug|Any CPU.ActiveCfg = Debug
-		{C9224C2F-5F39-4A5E-BC68-A5D2E33561A5}.Release|Any CPU.ActiveCfg = Release
+		{B445821D-790B-438E-872A-21EF6C46DA04}.Debug|Any CPU.ActiveCfg = Debug
+		{B445821D-790B-438E-872A-21EF6C46DA04}.Debug|Any CPU.Build.0 = Debug
+		{B445821D-790B-438E-872A-21EF6C46DA04}.Release|Any CPU.ActiveCfg = Release
+		{B445821D-790B-438E-872A-21EF6C46DA04}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using static DBConnection.Helpers.SaveHelpers;
 
 namespace DBConnection.Helpers
 {
@@ -18,18 +19,21 @@ namespace DBConnection.Helpers
                 if (!string.IsNullOrEmpty(userName) && !tableName.Contains(userName.ToLowerInvariant()))
                     continue;
 
+                var office = tableName.Contains("office");
+                var localTable = DatabaseHelpers.GetAllElementsLm(conn, tableName, current, office);
+
+                if (localTable == null)
+                {
+                    Console.WriteLine($"{tableName} is empty! Skipping...");
+                    continue;
+                }
+
                 Console.WriteLine(tableName);
 
-                if (tableName.Contains("office"))
-                {
-                    var officeTable = DatabaseHelpers.GetAllElementsLm(conn, tableName, current, true);
-                    SaveHelpers.SaveTableOffice(officeTable, folder, tableName);
-                }
+                if (office)
+                    SaveTableOffice(localTable, folder, tableName);
                 else
-                {
-                    var localTable = DatabaseHelpers.GetAllElementsLm(conn, tableName, current, false);
-                    SaveHelpers.SaveTable(localTable, folder, tableName);
-                }
+                    SaveTable(localTable, folder, tableName);
             }
         }
 

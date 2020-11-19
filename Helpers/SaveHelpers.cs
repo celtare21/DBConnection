@@ -91,6 +91,7 @@ namespace DBConnection.Helpers
             {
                 Table tableMain = worksheet.Tables.Add("Table", $"A1:I{max + 1}", true);
                 tableMain.BuiltInStyle = BuiltInTableStyleName.TableStyleMedium2;
+
                 Table tableLittle = worksheet.Tables.Add("TableLittle",
                     $"A{max + Constant.Offset + 1}:E{max + Constant.Offset + 4}", true);
                 tableLittle.BuiltInStyle = BuiltInTableStyleName.TableStyleMedium2;
@@ -138,6 +139,9 @@ namespace DBConnection.Helpers
                             worksheet.Cells[i + 1, j].Value = MiscHelpers.ConversionWrapper(localTime);
                             totalTime += localTime;
                             break;
+                        case "observatii":
+                            worksheet.Cells[i + 1, j].Value = MiscHelpers.ConversionWrapper((string)table[key][i]);
+                            break;
                     }
 
                     if (j == 4)
@@ -156,8 +160,9 @@ namespace DBConnection.Helpers
 
             if (max > 0)
             {
-                Table tableMain = worksheet.Tables.Add("Table", $"A1:E{max + 1}", true);
+                Table tableMain = worksheet.Tables.Add("Table", $"A1:F{max + 1}", true);
                 tableMain.BuiltInStyle = BuiltInTableStyleName.TableStyleMedium2;
+
                 Table tableLittle = worksheet.Tables.Add("TableLittle",
                     $"A{max + Constant.Offset + 1}:E{max + Constant.Offset + 2}", true);
                 tableLittle.BuiltInStyle = BuiltInTableStyleName.TableStyleMedium2;

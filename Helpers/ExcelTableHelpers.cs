@@ -43,16 +43,14 @@ namespace DBConnection.Helpers
             worksheet.Columns[2].SetWidth(100, LengthUnit.Pixel);
             worksheet.Columns[3].SetWidth(90, LengthUnit.Pixel);
             worksheet.Columns[4].SetWidth(90, LengthUnit.Pixel);
-            worksheet.Columns[5].SetWidth(110, LengthUnit.Pixel);
-            worksheet.Columns[6].SetWidth(120, LengthUnit.Pixel);
-            worksheet.Columns[7].SetWidth(90, LengthUnit.Pixel);
-            worksheet.Columns[8].SetWidth(140, LengthUnit.Pixel);
+            worksheet.Columns[5].SetWidth(140, LengthUnit.Pixel);
 
             worksheet.Cells[0, 0].Value = "ID";
             worksheet.Cells[0, 1].Value = "Data";
             worksheet.Cells[0, 2].Value = "Ora incepere";
             worksheet.Cells[0, 3].Value = "Ora sfarsit";
             worksheet.Cells[0, 4].Value = "Ora total";
+            worksheet.Cells[0, 5].Value = "Observatii";
 
             worksheet.Cells[max + Constant.Offset, 0].Value = "PLATA";
             worksheet.Cells[max + Constant.Offset, 1].Value = "-";

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+// ReSharper disable UnusedMember.Global
 
 namespace DBConnection.Helpers
 {
@@ -13,7 +14,7 @@ namespace DBConnection.Helpers
                 string => elem.ToString(),
                 DateTime time => time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                 TimeSpan span => span.ToString(@"hh\:mm"),
-                _ => null
+                var _ => null
             };
         }
 
